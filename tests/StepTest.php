@@ -12,6 +12,8 @@ class StepTest extends PHPUnit_Framework_TestCase {
 			"b" => 13
 		));
 		
+		var_dump($output);
+		
 		$this->assertEquals(5,count($output));
 		
 	}

@@ -2,15 +2,15 @@
 
 require_once(__DIR__."/../vendor/autoload.php");
 
-class StepB extends Breadam\Steps\Step {
+class StepB extends Breadam\StepsPHP\Step {
 	
 	protected function onCall($add,$sub,$mul,$div,$c){
 		
-		$this->output("addition",$add);
-		$this->output("subtraction",$sub);
-		$this->output("multiplication",$mul);
-		$this->output("division",$div);
-		$this->output("c",$c);
+		$this->out("addition",$add);
+		$this->out("subtraction",$sub);
+		$this->out("multiplication",$mul);
+		$this->out("division",$div);
+		$this->out("c",$c);
 	}
 	
 }

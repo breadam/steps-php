@@ -1,92 +1,86 @@
 <?php namespace Breadam\StepsPHP;
 
-abstract class Step implements StepInterface{
+abstract class Step{
 	
 	private $caller;
-	private $scope;
 	private $output;
+	private $scope;
+	private $started = false;
 	
 	public function __construct(Step $caller = null){
 		$this->caller = $caller;
 	}
 	
-	private function reset(){
-		$this->scope = array();
-		$this->output = array();
-	}
-	
-	protected function caller(){
-		if(is_null($this->caller)){
-			return false;
-		}
-		return $this->caller;
-	}
-	
-	protected function output($key = null,$val = null){
-		$num = func_num_args();
-		
-		if($num === 0){
-			return $this->output;
-		}
-		
-		if($num === 1){
-			if(is_array($key)){
-				$this->output = $key;
-			}else{
-				return $this->output[$key];
-			}
-			
-		}
-		
-		$this->output[$key] = $val;
-	}
-	
-	protected function scope($key = null,$val = null){
-		$num = func_num_args();
-		
-		if($num === 1){
-		
-			if(isset($this->scope[$key])){
-			
-				return $this->scope[$key];
-				
-			}else if($this->caller){
-			
-				return $this->caller->scope($key);
-			}
-			return null;
-		}
-		
+	public function __set($key,$val){
 		$this->scope[$key] = $val;
 	}
 	
-	public function call(array $input=null){
+	public function call(array $input=array()){
 		
-		$this->reset();
+		if(!$this->started){
+			$this->scope = array();
+			$this->output = array();
+			$this->started = true;
+		}
 		
-		if(!is_null($input)){
-			foreach($input as $key => $val){
-				$this->scope($key,$val);
-			}
+		$onCall = new \ReflectionMethod(get_class($this),"onCall");
+		
+		foreach($input as $key => $val){
+			$this->scope[$key] = $val;
 		}
 		
 		$args = array();
-		$method = new \ReflectionMethod(get_class($this),"onCall");
-		
-		foreach($method->getParameters() as $parameter){
-			$name = $parameter->getName();
+		foreach($onCall->getParameters() as $expected){
+			$name = $expected->getName();
 			$args[] = $this->scope($name);
 		}
 		
-		$method->setAccessible(true);
-		$success = $method->invokeArgs($this,$args);
-		$method->setAccessible(false);
+		$onCall->setAccessible(true);
+		$success = $onCall->invokeArgs($this,$args);
+		$onCall->setAccessible(false);
+		
+		$this->started = false;
 		
 		if($success === false){
 			return false;
 		}
 		
-		return $this->output();
+		return $this->output;
 	}
 	
+	protected function step($name){
+		$output = $this->callStep($name);
+		$this->scope = array_merge($this->scope,$output);
+	}
+	
+	protected function out($key = null,$val = null){
+		if(func_num_args() === 1){
+			$output = $this->callStep($key);
+			$this->output = array_merge($this->output,$output);	
+			return;
+		}
+		
+		$this->output[$key] = $val;
+	}
+	
+	private function callStep($name){
+		$stepName = "\\".implode("\\",explode(".",$name));
+		
+		if(!class_exists($stepName)){
+			throw new Exception\StepNotFoundException;
+		}
+		
+		$step = new $stepName($this);
+		
+		return $step->call();
+	}
+	
+	private function scope($key){
+		if(isset($this->scope[$key])){
+			return $this->scope[$key];
+		}else if(!is_null($this->caller)){
+			return $this->caller->scope($key);
+		}
+		return null;
+	}
 }
