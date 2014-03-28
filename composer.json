@@ -1,0 +1,14 @@
+{
+    "name": "breadam/steps-php",
+    "description": "No description yet",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "breadam",
+            "email": "bilgi@breadam.com"
+        }
+    ],
+		"autoload": {
+        "psr-4": {"Breadam\\": "src/"}
+    }
+}
