@@ -48,9 +48,14 @@ abstract class Step{
 		return $this->output;
 	}
 	
-	protected function step($name){
+	protected function step($name,$out = false){
 		$output = $this->callStep($name);
+		
 		$this->scope = array_merge($this->scope,$output);
+		
+		if($out){
+			$this->output = array_merge($this->scope,$output);
+		}
 	}
 	
 	protected function out($key = null,$val = null){
