@@ -134,7 +134,7 @@ class Steps{
 					return $array[$key];
 				}
 				
-				throw new Exception\ScopeKeyNotExistsException;
+				throw new Exception\ScopeKeyNotAnArrayException;
 			}
 				
 		}
