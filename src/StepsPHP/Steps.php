@@ -13,8 +13,10 @@ class Steps{
 	private $alias = array();
 	
 	public function __construct(ResolverInterface $resolver = null){
-		if(is_null($resolver )){
+		if(is_null($resolver)){
 			$this->resolver = new DefaultResolver;
+		}else{
+			$this->resolver = $resolver;
 		}
 	}
 	
@@ -100,14 +102,42 @@ class Steps{
 			if($paramName === "steps"){
 				$args[] = $this;
 			}else{
-				if(array_key_exists($paramName,$this->scope)){
-					$args[] = $this->scope[$paramName];
-				}else{
-					$args[] = null;
-				}
+				
+				$paramName[0] = strtolower($paramName[0]);
+				// optimize
+				$func = create_function('$c','return "_" . strtolower($c[1]);');
+				$params = preg_replace_callback("/([A-Z])/",$func,$paramName);
+				$keys = explode("_",$params);
+				$args[] = self::arrayGet($this->scope,$keys);
 			}
 		}
 		
 		return $args;
+	}
+	
+	private static function arrayGet($array,$keys){
+		
+		$key = $keys[0];
+		if(array_key_exists($key,$array)){
+			
+			if(is_array($array[$key])){
+				
+				if(count($keys) === 1){
+					return $array[$key];
+				}
+				array_shift($keys);
+				return self::arrayGet($array[$key],$keys);
+				
+			}else{
+				
+				if(count($keys) === 1){
+					return $array[$key];
+				}
+				
+				throw new Exception\ScopeKeyNotExistsException;
+			}
+				
+		}
+		return null;
 	}
 }

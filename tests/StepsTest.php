@@ -14,7 +14,12 @@ class StepsTest extends PHPUnit_Framework_TestCase {
 		
 		$output = $steps->run(array(
 			"x" => 1,
-			"y" => 2
+			"y" => 2,
+			"a" => array(
+				"b" => array(
+					"c" => 3434
+				)
+			)
 		));
 		
 		echo var_dump($output);

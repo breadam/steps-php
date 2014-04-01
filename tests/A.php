@@ -8,12 +8,11 @@ class A{
 	
 	public function stepY($steps,$y){
 		$steps->y = $y+1;
-		$steps->call("B.A.sum");
 	}
 	
-	public function stepSum($steps,$x,$y){
+	public function stepSum($steps,$aBCD,$y){
 		$steps->call("B.A.x");
-		$steps->out("b",654);
+		$steps->out("b",$aBC);
 	}
 	
 }
