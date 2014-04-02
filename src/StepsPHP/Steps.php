@@ -7,14 +7,16 @@ class Steps{
 
 	protected $stepsName = "steps";
 	
+	protected $steps = array();
+	protected $alias = array();
+	
 	private $stepsResolver;	
 	private $paramResolver;
 	
 	private $scope;
 	private $output;
 	private $start = false;
-	private $steps = array();
-	private $alias = array();
+	
 	
 	public function __construct(StepsResolverInterface $stepsResolver = null,ParameterResolverInterface $paramResolver = null){
 		if(is_null($stepsResolver)){
