@@ -1,6 +1,6 @@
 <?php namespace Breadam\StepsPHP;
 
-interface ResolverInterface{
+interface StepsResolverInterface{
 	
 	public function resolve($name);
 	

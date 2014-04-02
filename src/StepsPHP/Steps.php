@@ -7,18 +7,26 @@ class Steps{
 
 	protected $stepsName = "steps";
 	
-	private $resolver;	
+	private $stepsResolver;	
+	private $paramResolver;
+	
 	private $scope;
 	private $output;
 	private $start = false;
 	private $steps = array();
 	private $alias = array();
 	
-	public function __construct(ResolverInterface $resolver = null){
-		if(is_null($resolver)){
-			$this->resolver = new DefaultResolver;
+	public function __construct(StepsResolverInterface $stepsResolver = null,ParameterResolverInterface $paramResolver = null){
+		if(is_null($stepsResolver)){
+			$this->stepsResolver = new DefaultStepsResolver;
 		}else{
-			$this->resolver = $resolver;
+			$this->stepsResolver = $stepsResolver;
+		}
+		
+		if(is_null($paramResolver)){
+			$this->paramResolver = new DefaultParameterResolver;
+		}else{
+			$this->paramResolver = $paramResolver;
 		}
 	}
 	
@@ -78,10 +86,10 @@ class Steps{
 			$name = $this->steps[$this->alias[$name]];	
 		}
 		
-		$this->resolver->resolve($name);
+		$this->stepsResolver->resolve($name);
 		
-		$className = $this->resolver->className();
-		$stepName = $this->resolver->stepName();
+		$className = $this->stepsResolver->className();
+		$stepName = $this->stepsResolver->stepName();
 		
 		$class = new ReflectionClass($className);
 		
@@ -104,7 +112,7 @@ class Steps{
 			if($paramName === $this->stepsName){
 				$args[] = $this;
 			}else{
-				$params = explode("_",$paramName);
+				$params = $this->paramResolver->resolve($paramName);
 				$args[] = self::arrayGet($this->scope,$params);
 			}
 		}
@@ -112,7 +120,7 @@ class Steps{
 		return $args;
 	}
 	
-	private static function arrayGet($array,$keys){
+	private static function arrayGet(array $array,array $keys){
 		
 		$key = $keys[0];
 		if(array_key_exists($key,$array)){

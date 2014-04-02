@@ -1,6 +1,6 @@
 <?php namespace Breadam\StepsPHP;
 
-class DefaultResolver implements ResolverInterface{
+class DefaultStepsResolver implements StepsResolverInterface{
 	
 	private $className;
 	private $stepName;
