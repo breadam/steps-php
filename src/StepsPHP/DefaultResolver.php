@@ -11,7 +11,7 @@ class DefaultResolver implements ResolverInterface{
 		$this->stepName = array_pop($names);
 		
 		if(count($names) > 0){
-			$this->className = "\\".implode("\\",$names);
+			$this->className = "\\".implode("\\",array_map("ucfirst",$names));
 		}else{
 			$this->className = false;
 		}

@@ -5,6 +5,8 @@ use ReflectionMethod;
 
 class Steps{
 
+	protected $stepsName = "steps";
+	
 	private $resolver;	
 	private $scope;
 	private $output;
@@ -99,16 +101,11 @@ class Steps{
 		
 			$paramName = $parameter->getName();
 			
-			if($paramName === "steps"){
+			if($paramName === $this->stepsName){
 				$args[] = $this;
 			}else{
-				
-				$paramName[0] = strtolower($paramName[0]);
-				// optimize
-				$func = create_function('$c','return "_" . strtolower($c[1]);');
-				$params = preg_replace_callback("/([A-Z])/",$func,$paramName);
-				$keys = explode("_",$params);
-				$args[] = self::arrayGet($this->scope,$keys);
+				$params = explode("_",$paramName);
+				$args[] = self::arrayGet($this->scope,$params);
 			}
 		}
 		
@@ -134,7 +131,7 @@ class Steps{
 					return $array[$key];
 				}
 				
-				throw new Exception\ScopeKeyNotAnArrayException;
+				throw new Exception\ScopeKeyNotArrayException;
 			}
 				
 		}

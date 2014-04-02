@@ -2,7 +2,7 @@
 
 class A{
 	
-	public function stepX($steps,$x){
+	public function stepx($steps,$x){
 		$steps->x = $x+1;
 	}
 	
@@ -10,9 +10,9 @@ class A{
 		$steps->y = $y+1;
 	}
 	
-	public function stepSum($steps,$aBCD,$y){
-		$steps->call("B.A.x");
-		$steps->out("b",$aBC);
+	public function stepSum($steps,$a_b_c,$y){
+		$steps->call("b.a.x");
+		$steps->out("b",$a_b_c);
 	}
 	
 }
