@@ -5,7 +5,7 @@ use ReflectionMethod;
 
 class Steps{
 
-	protected $stepsName = "steps";
+	private $stepsName = "steps";
 	
 	protected $steps = array();
 	protected $alias = array();

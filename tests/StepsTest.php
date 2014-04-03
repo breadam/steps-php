@@ -1,6 +1,7 @@
 <?php
 
 require("A.php");
+require("B.php");
 
 class StepsTest extends PHPUnit_Framework_TestCase {
 	
@@ -11,6 +12,26 @@ class StepsTest extends PHPUnit_Framework_TestCase {
 		$steps->step("b.a.x");
 		$steps->step("b.A.y");
 		$steps->step("b.A.sum");
+		
+		$output = $steps->run(array(
+			"x" => 1,
+			"y" => 2,
+			"a" => array(
+				"b" => array(
+					"c" => 3434
+				)
+			)
+		));
+		
+		echo var_dump($output);
+		
+		$this->assertEquals(1,1);
+		
+	}
+	
+	public function testExtends(){
+		
+		$steps = new B\B;
 		
 		$output = $steps->run(array(
 			"x" => 1,
